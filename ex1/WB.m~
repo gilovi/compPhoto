@@ -1,0 +1,13 @@
+function [ output_args ] = WB( orig, flashed ,gray_card, method_num )
+%WB generates White balanced picture from provided original,flashed and gray card photos. 
+%   inputs: 
+%           orig: the original picture.
+%           flashed: the picture with flash.
+%           geay_card: a picture with a grah card and only the flash as
+%           light source.
+%           method_num: the method to preform the WB 1- bradford, 2- von-
+%
+
+
+end
+
