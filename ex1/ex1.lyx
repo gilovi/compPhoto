@@ -137,7 +137,7 @@ So we can get:
 (\ref{eq:w.flash})-(\ref{eq:wo flash}) & \Rightarrow\nonumber \\
  &  & \bar{I}_{1}-\bar{I}_{2}=\bar{R}\bar{L}_{2}k_{2}\label{eq:flash only}\\
  &  & \Rightarrow\nicefrac{(\ref{eq:w.flash})}{\bar{R}\bar{L}_{2}k_{2}}=\frac{\bar{I}_{1}}{\bar{I}_{1}-\bar{I}_{2}}=1+\frac{\bar{L}_{1}k_{1}}{\bar{L}_{2}k_{2}}\nonumber \\
-\Rightarrow & \frac{\bar{I}_{1}\bar{L}_{1}}{\bar{I}_{1}-\bar{I}_{2}} & -1=\bar{L}_{1}\cdot\frac{k_{1}}{k_{2}}
+\Rightarrow & \frac{\bar{I}_{1}\bar{L}_{2}}{\bar{I}_{1}-\bar{I}_{2}} & -\bar{L}_{2}=\bar{L}_{1}\cdot\frac{k_{1}}{k_{2}}
 \end{eqnarray}
 
 \end_inset
@@ -153,7 +153,7 @@ Now, since we care only about the proportions in
 we can write:
 \begin_inset Formula 
 \[
-\frac{\frac{I_{1}L_{1}}{I_{1}-I_{2}}_{R}-1}{\frac{I_{1}L_{1}}{I_{1}-I_{2}}_{G}-1}=\frac{L_{1R}}{L_{1G}}\cdot
+\frac{\frac{I_{1}L_{2}}{I_{1}-I_{2}}_{R}-L_{2_{R}}}{\frac{I_{1}L_{2}}{I_{1}-I_{2}}_{G}-L_{2_{G}}}=\frac{L_{1R}}{L_{1G}}\cdot
 \]
 
 \end_inset

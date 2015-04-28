@@ -4,8 +4,9 @@ function [ avgColor ] = extAvgColor( gray_card_img )
 
 
 figure; imshow (gray_card_img);title('please select part of the gray card');
-f = imfreehand(gca);
+f = imrect(gca);
 mask = createMask(f);
+mask = imfill(mask,'holes');
 close;
 
 avgColor  = sum(sum(mat2gray(gray_card_img).*repmat(mask,1,1,3)))/sum(mask(:));
