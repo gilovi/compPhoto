@@ -36,9 +36,9 @@ L1k = (I1.*L2_m./(flash_only)) - L2_m;
 R = L1k(:,:,1);
 G = L1k(:,:,2);
 B = L1k(:,:,3);
-L1 = cat(3,mean(R(~outliers)), mean(G(~outliers)) , mean(B(~outliers)) );
+L1 = [mean(R(~outliers)), mean(G(~outliers)) , mean(B(~outliers))]';
 
-L1 = L1./L1(:,:,2);
+L1 = L1./L1(2);
 
 end
 

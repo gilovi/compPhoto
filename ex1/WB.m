@@ -21,6 +21,9 @@ function [ WB_pic ] = WB( orig, flashed ,gray_card, method_num )
 %
 %   
 %
+orig = mat2gray(orig);
+flashed = mat2gray(flashed);
+gray_card = mat2gray(gray_card);
 
 brad = [.8951, .2664,-.1614;-.7502,1.7135,0.0367;0.0389,-0.0685,1.0296];
 von_kries = [0.40024,0.7076,-0.0808100;-0.2263,1.16532,0.0457;0,0,0.91822];
@@ -36,17 +39,32 @@ switch method_num
         M = xyz;
         
     otherwise
+       M = xyz;
        xyz2lms = eye(3); 
 end
 %convert the light source to lms (or leave it in method_num > 3 )
 L1 = xyz2lms * get_light_source(flashed,orig,extAvgColor(gray_card));
-L1m = 1./repmat(L1,size(orig(:,:,1)));
 
+norm_mat = diag(1./L1);
+orig_p = permute(orig,[3 1 2]);
+orig_r = reshape(orig_p , [3, length(orig(:))/3]);
+s = size(orig_p);clear orig_p;
 
+WB_pic =  inv(M) * norm_mat * M * orig_r;
+WB_pic = permute(reshape(WB_pic , s) , [2 3 1]);
 
-%h = vision.GammaCorrector(2.2,'Correction','Gamma');
-%cNo=step(h,mat2gray(no));
-%y = step(h,x);
+% try to reconstruct the intensity of the light source
+%S = orig(:,:,1) + orig(:,:,2) + orig(:,:,3);
+%[val,pos] = max(S());
+%S =  WB_pic(:,:,1) + WB_pic(:,:,2) + WB_pic(:,:,3);
+
+%prop = val/(S(pos))
+% WB_pic = WB_pic .* prop;
+
+%G = orig(:,:,2);
+%[val , pos] = max(G(:));
+%G = WB_pic(:,:,2);
+%prop = val/(G(pos) )
 
 end
 
