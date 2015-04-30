@@ -23,12 +23,13 @@ L2_m = repmat(L2_m,[r,c]);
 flash_only = (I1-I2);
 
 %try to eliminate outliers
-%S = sum(flash_only,3);
-%outliers = ((S < (max(S(:))* 0.2))) | (S > max(S(:))* 0.6);
+S = sum(flash_only,3);
+outliers = ((S < (max(S(:))* 0.2))) | (S > max(S(:))* 0.8);
 
-outliers = ((flash_only < (max(flash_only(:))* 0.2))) | (flash_only > max(flash_only(:))* 0.6);
-outliers = (outliers(:,:,1) | outliers(:,:,2) | outliers(:,:,3));
+%outliers = (flash_only > max(flash_only(flash_only<max(flash_only(:)))) * 0.8);
+%outliers = (outliers(:,:,1) | outliers(:,:,2) | outliers(:,:,3));
 
+imshow(outliers)%%%%%%
 %
 L1k = (I1.*L2_m./(flash_only)) - L2_m;
 
