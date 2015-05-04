@@ -36,7 +36,7 @@ von_kries = [0.38971 0.68898 -0.07868;-0.22981 1.1834 0.04641;0 0 1];
 von_kries65 = [0.40024,0.7076,-0.0808100;-0.2263,1.16532,0.0457;0,0,0.91822]; %D65
 xyz = eye(3);
 
-switch method_num %picts in XYZ
+switch method_num 
     case 1
         M = brad;
         xyz2lms = brad;
@@ -53,15 +53,17 @@ switch method_num %picts in XYZ
         M = xyz;
         xyz2lms = eye(3);
         
-    otherwise %picts in rgb
+    otherwise 
         M = eye(3);
         xyz2lms = eye(3);
 end
 
 if method_num > 5
-    L1 = get_light_source(xyz2rgb(flashed),xyz2rgb(orig),L2)
+    L1 = get_light_source((flashed),(orig),L2);
 else %convert the light source to lms 
-    L1 = xyz2lms * permute(rgb2xyz(permute(get_light_source(xyz2rgb(flashed),xyz2rgb(orig) , L2), [3 2 1]) ),[3 2 1]);
+   % L1 = xyz2lms * permute(rgb2xyz(permute(get_light_source(xyz2rgb(flashed),xyz2rgb(orig) , L2), [3 2 1]) ),[3 2 1]);
+    L1 = xyz2lms * permute(rgb2xyz(permute(get_light_source((flashed),(orig) , L2), [3 2 1]) ),[3 2 1]);
+    orig = rgb2xyz(orig);
 end
 
 norm_mat = diag(1./L1);
@@ -72,13 +74,17 @@ s = size(orig_p);clear orig_p;
 WB_pic =  M\norm_mat * M * orig_r;
 WB_pic = permute(reshape(WB_pic , s) , [2 3 1]);
 
+if method_num <= 5
+WB_pic = xyz2rgb(WB_pic);
+end
+
 % try to reconstruct the intensity of the light source
 S = orig(:,:,1) + orig(:,:,2) + orig(:,:,3);
 [val,pos] = max(S());
 S =  WB_pic(:,:,1) + WB_pic(:,:,2) + WB_pic(:,:,3);
 
 prop = val/(S(pos));
-%WB_pic = WB_pic .* prop;
+WB_pic = WB_pic .* prop;
 
 %G = orig(:,:,2);
 %[val , pos] = max(G(:));
