@@ -25,9 +25,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -51,6 +52,7 @@
 \shortcut idx
 \color #008000
 \end_index
+\topmargin 3.5cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -68,8 +70,85 @@
 
 \begin_body
 
+\begin_layout Title
+Computational Photography 67735
+\end_layout
+
+\begin_layout Title
+Assignment 1: white balance
+\end_layout
+
+\begin_layout Author
+Gilad Ovits 300604493
+\begin_inset Newline newline
+\end_inset
+
+Shai Hoffman 300205424
+\end_layout
+
+\begin_layout Section*
+The problem
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-Asumming a simple image formation model as in the ex description:
+We are given a set of two pictures,
+\end_layout
+
+\begin_layout Standard
+one taken while a single light source is in scene and the other in the same
+ situation exactly (as well as the exposure, aperture, and white balance).
+\end_layout
+
+\begin_layout Standard
+except that ,we get a photograph of a gray card took only with flash light
+ source.
+\end_layout
+
+\begin_layout Standard
+the problem we need to solve is to find a way to get a white balanced picture
+ from the original- no flash picture.
+\end_layout
+
+\begin_layout Standard
+For doing that we need first to find the original picture's light source,
+ than fix it to be equalized.
+\end_layout
+
+\begin_layout Standard
+This proccess as shown in the lectures can be done in several ways: 
+\end_layout
+
+\begin_layout Standard
+1.
+ Applying the correction directly on the RGB channels.
+\end_layout
+
+\begin_layout Standard
+2.
+ Applying the correction on the XYZ representation of the image.
+\end_layout
+
+\begin_layout Standard
+3.
+ Applying the correction in LMS.
+ For doing that we need to move from XYZ to LMS.
+ And we saw several ways to do so.
+\end_layout
+
+\begin_layout Section*
+Solving the problem
+\end_layout
+
+\begin_layout Subsection*
+Extracting light source
+\end_layout
+
+\begin_layout Standard
+Assuming a simple image formation model as in the ex description:
 \end_layout
 
 \begin_layout Standard
@@ -173,6 +252,501 @@ and the same for other channels.
 \begin_layout Standard
 Next, we should avrage this results on many pixels in the images and we
  should get quite accurate results.
+\end_layout
+
+\begin_layout Standard
+In our solution, here we tried to take out the outliers as the flash shadows
+ and the burned places.
+\end_layout
+
+\begin_layout Subsection*
+Using the light source in order to get white balance
+\end_layout
+
+\begin_layout Standard
+RGB correction:
+\end_layout
+
+\begin_layout Standard
+simply multiply the channels in 
+\begin_inset Formula $\nicefrac{1}{L_{1RGB}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+XYZ correction:
+\end_layout
+
+\begin_layout Standard
+we first need to move both the picture and the 
+\begin_inset Formula $\bar{L}_{1}$
+\end_inset
+
+ to XYZ , make the correction , and back to RGB.
+\begin_inset Newline newline
+\end_inset
+
+LMS correction
+\end_layout
+
+\begin_layout Standard
+using the equation from class, we need to move to XYZ.
+ Then, to LMS ,using one of the methods, apply the correction, and back.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\bar under
+Important remark:
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+For RGB to XYZ convertion we used a matrix we found in the Internet, and
+ asked the 'dcraw' output to be in the RGB working space that’s agrees with
+ it.
+ (namely, using -o 1 option)
+\end_layout
+
+\begin_layout Section*
+Expectations and Limitations
+\end_layout
+
+\begin_layout Subsection*
+General Limitations:
+\end_layout
+
+\begin_layout Standard
+We expect all this approach of white balancing to fail in cases with especially
+ low/ high illumination, since in those situations we can get much noise/
+ to many burnt places, in the input pictures, so the 
+\begin_inset Formula $L_{1}$
+\end_inset
+
+ extraction will generate bad results.
+ For that reason we think that outdoor samples for example (taken at day
+ and night) will not do very well, since the sky at day time produces light,
+ so the sun is not exactly a single light source, as well as the narrow
+ and short range of the flash at night time.
+ (We never actually tried anything but the given samples due to time limitations...
+ )
+\end_layout
+
+\begin_layout Standard
+In addition, in scens with a very few dominant colors, there is more ambiguity
+ about the 
+\begin_inset Formula $L_{1}$
+\end_inset
+
+ source since the color could be interpreted as the light source colors
+ or the photographed subject colors.
+ So in these cases too we expect poor results.
+\end_layout
+
+\begin_layout Subsection*
+method based expectations:
+\end_layout
+
+\begin_layout Standard
+We expected the RGB balance to work pretty well in general cases (in the
+ frame of the limitations above), because it gives a shift to the light
+ source in the natural representation.
+ so not much could go wrong.
+ On the other hand no special boosts is added in this way.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Next, we expected the XYZ to give the poorest results since it corrects
+ the picture in unnatural environment on the one hand, but still dosn't
+ get any thoughtful enhancements.
+ In addition, it involves the transformations, which we are not sure are
+ accurate.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The LMS white balance was our biggest hope, since it suppose to use an even
+ more natural environment at least for the brain.
+ And in theory, this method should give the best results, in hope that the
+ transformations expected inaccuracy wont hurt too much, and that we could
+ find the optimal transformation (e.g Von-Kries, Bradford, etc.).
+\end_layout
+
+\begin_layout Section*
+results
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Original image
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename gamma_no.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+LMS White balance using Bradford
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp1.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+LMS White balance using Von Kries
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp3.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+LMS White balance using CIECAM02
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp2.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+LMS using Von Kries with D65 normalization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp4.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+XYZ White Balance
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp5.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+RGB White Balance 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename WB_samp6.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CIECAM02 is allmost simmilar to Bradford, and it seems to me that Von Kries
+ has a bit better results of the two.
+\end_layout
+
+\begin_layout Standard
+indeed, the XYZ seems to output the worst results, and at least for my opinion
+ the RGB results are not bad.
+\end_layout
+
+\begin_layout Subsection*
+conclusion
+\end_layout
+
+\begin_layout Standard
+it seems that all of the methods gave a range of reasonable results.
+ Some are more agreeable to be worst, but for some, it is might be a matter
+ of taste, and perhaps different interpretation of the colors in one’s brain.
+ and still, it would be reasonable assumption to make, that on some scenes
+ more people will agree on one method over the other, but in another scenes
+ it might be other method to be the best.
 \end_layout
 
 \end_body
