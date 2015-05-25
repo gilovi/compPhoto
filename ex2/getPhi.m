@@ -1,12 +1,12 @@
 function [ phi ] = getPhi( dhPyr, method, params)
-%getG returns an the attenuatuated log luminance channel matrix.
+%getG returns an the attenuation log luminance channel matrix.
 %  inputs: 
 %       dhPyr: the log luminance channel pyrmid
 %       method: the attenuatuation function. 'fattal' / energy
 %       alfa ,beta : the attenuatuation parameters.
 %
 %   output:
-%       The attenuatuated log luminance channel matrix G.
+%       The attenuation log luminance channel matrix G.
 
     switch method
         case 'fattal'
@@ -33,15 +33,15 @@ function [ phi ] = getPhi( dhPyr, method, params)
 
 end
 
-function attenuatuation = fattal(nablaH, params)
+function attenuatuation = fattal(nablaHmag, params)
     alfaFac = params(1);
     beta = params(2);
     
-    alfa = mean(nablaH(:)) .* alfaFac;
+    alfa = mean(nablaHmag(:)) .* alfaFac;
     attenuatuation = (im ./ alfa) .^ (beta - 1);
 end
 
-function attenuatuation = energy(nablaH, params)
+function attenuatuation = energy(nablaHmag, params)
 %
 % usage:  energy(nablaH, [mag,sigma,attenuation])
 %   mag is the gaussian size, sigma is the gaussian sigma and attenuation is the attenuation factor 
@@ -50,8 +50,8 @@ function attenuatuation = energy(nablaH, params)
     att = params(3);
 
     h = fspecial('gaussian', floor(min(size(im)/mag)), sigma);
-    lowpass=(imfilter(nablaH, h));
-    hipass =  nablaH - lowpass;
+    lowpass=(imfilter(nablaHmag, h));
+    hipass =  nablaHmag - lowpass;
     attenuatuation = (lowpass/att)+(hipass);
 
 end
