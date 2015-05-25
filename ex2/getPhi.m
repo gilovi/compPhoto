@@ -1,4 +1,4 @@
-function [ phi ] = getPhi( dhPyr, method, params)
+function [ phi ] = getPhi( logLuminanceImage, method, params)
 %getG returns an the attenuation log luminance channel matrix.
 %  inputs: 
 %       dhPyr: the log luminance channel pyrmid
@@ -20,13 +20,27 @@ function [ phi ] = getPhi( dhPyr, method, params)
         otherwise
             error('given method is unsupported');
     end 
+
     
-    
-    phi = f( dhPyr{length(dhPyr)},params);
-    for i = (length(dhPyr)-1) : -1 : 1
-        currLevel = f(dhPyr{i}, params);
-        phi = imresize(phi, size(dhPyr{i}), 'bilinear' ) .* currLevel;
+    %'d is chosen such that the width and the heigh of H d are at least 32':
+    d = floor(min(log2(size(logLuminanceImage)/32)));
+    %smallest pyrmid image & its phi:
+    [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(d),'bilinear'),'CentralDifference');
+    phi = f( mag, params);
+    %iteratively sum phi:
+    for i = (d-1) : -1 : 0
+        [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(i),'bilinear'),'CentralDifference');
+        currLevel = f(mag, params);
+        phi = imresize(phi, size(mag), 'bilinear' ) .* currLevel;
     end
+    
+    
+    
+%     phi = f( dhPyr{length(dhPyr)},params);
+%     for i = (length(dhPyr)-1) : -1 : 1
+%         currLevel = f(dhPyr{i}, params);
+%         phi = imresize(phi, size(dhPyr{i}), 'bilinear' ) .* currLevel;
+%     end
     
 
     
