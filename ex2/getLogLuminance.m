@@ -1,9 +1,10 @@
-function [ logLuminance ] = getLogLuminance( image )
+function [ logLuminance ] = getLogLuminance( luminance )
 %
+mn = min(luminance(:));
+mx = max(luminance(:));
 
-luminance = rgb2gray(double (image));
-luminance = (luminance - min(luminance(:))) / (max(luminance(:)) - min(luminance(:)));
-logLuminance = log(luminance + eps);
+nluminance = (luminance - min(luminance(:))) / (max(luminance(:))) * 100;
+logLuminance = log(nluminance + eps);
 
 
 end
