@@ -28,7 +28,7 @@ function [ phi ] = getPhi( logLuminanceImage, method, params)
     [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(d),'bilinear'),'CentralDifference');
     phi = f( mag, params);
     %iteratively sum phi:
-    for i = d : -1 : 0
+    for i = d-1 : -1 : 0
         [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(i),'bilinear'),'CentralDifference');
         currLevel = f(mag, params);
         phi = imresize(phi, size(mag), 'bilinear' ) .* currLevel;
@@ -52,7 +52,7 @@ function attenuatuation = fattal(nablaHmag, params)
     beta = params(2);
     
     alfa = mean(nablaHmag(:)) .* alfaFac;
-	nablaHmag(nablaHmag<=0) = eps;
+	nablaHmag(nablaHmag<=0) = eps('single');
     attenuatuation = (nablaHmag ./ alfa) .^ (beta - 1);
 end
 
@@ -64,9 +64,12 @@ function attenuatuation = energy(nablaHmag, params)
     sigma = params(2);
     att = params(3);
 
-    h = fspecial('gaussian', floor(min(size(im)/mag)), sigma);
-    lowpass=(imfilter(nablaHmag, h));
-    hipass =  nablaHmag - lowpass;
+    h = fspecial('gaussian', floor(min(size(nablaHmag)/mag)), sigma);
+    lowpass = (imfilter(nablaHmag, h,'same'));
+    %figure;imshow(lowpass)
+    %figure;hipass =  nablaHmag - lowpass;
+    imshow(hipass)
     attenuatuation = (lowpass/att)+(hipass);
+    %figure;imshow(attenuatuation);
 
 end
