@@ -22,7 +22,7 @@ function varargout = HDR(varargin)
 
 % Edit the above text to modify the response to help HDR
 
-% Last Modified by GUIDE v2.5 27-May-2015 15:51:56
+% Last Modified by GUIDE v2.5 08-Jun-2015 22:18:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -80,19 +80,39 @@ function fatal_Callback(hObject, eventdata, handles)
 % hObject    handle to fatal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if path ~= ''
-
-    
+path=get(handles.path, 'String');
+image=get(handles.image, 'Value');
+alfa=get(handles.alfa, 'Value');
+beta=get(handles.beta, 'Value');
+gamma=get(handles.gamma, 'Value');
+params=[ alfa, beta ];
+if ( path ~= '' )
+   q = compressDR( image, 'fatal' , params);
+   
 end
+
+   
 % --- Executes on button press in energy.
 function energy_Callback(hObject, eventdata, handles)
 % hObject    handle to energy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if path ~= ''
-
+path=get(handles.path, 'String');
+image=get(handles.image, 'Value');
+alfa=get(handles.alfa, 'Value');
+beta=get(handles.beta, 'Value');
+gamma=get(handles.gamma, 'Value');
+params=[ alfa, beta, gamma ];
+if ( path ~= '' )
+    q = compressDR( image, 'energy' , params);
     
 end
+
+
+    
+
+    
+
 
 % --- Executes on slider movement.
 function alfa_Callback(hObject, eventdata, handles)
@@ -102,7 +122,10 @@ function alfa_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-alfa = get(hObject,'Value')
+
+alfa = get(hObject,'Value');
+display(alfa);
+set(handles.alfa,'Value',alfa);
 
 % --- Executes during object creation, after setting all properties.
 function alfa_CreateFcn(hObject, eventdata, handles)
@@ -124,6 +147,10 @@ function beta_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+beta = get(hObject,'Value');
+display(beta);
+set(handles.beta,'Value',beta);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -146,6 +173,10 @@ function gamma_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+gamma = get(hObject,'Value');
+display(gamma);
+set(handles.gamma,'Value',gamma);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -177,6 +208,9 @@ function path_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of path as text
 %        str2double(get(hObject,'String')) returns contents of path as a double
+path=get(hObject, 'String')
+display(path)
+set(handles.path,'String',path);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -241,7 +275,21 @@ function Load_Callback(hObject, eventdata, handles)
 % hObject    handle to Load (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-path = get(hObject,'String');
+
+path = get(handles.path,'String');
+LDR=get(handles.isLDR,'Value');
+HDR=get(handles.isHDR,'Value');
+display(LDR);
+display(HDR);
+if  LDR == 1 
+    z=imread(path);
+else
+    z=hdrread(path);
+end
+
+axes(handles.axes1);
+set(handles.image,'Value',z);
+imshow(z);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -256,3 +304,27 @@ function save_Callback(hObject, eventdata, handles)
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in isHDR.
+function isHDR_Callback(hObject, eventdata, handles)
+% hObject    handle to isHDR (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isHDR
+
+isHDR=get(hObject,'Value');
+set(handles.isHDR,'Value',isHDR);
+
+
+% --- Executes on button press in isLDR.
+function isLDR_Callback(hObject, eventdata, handles)
+% hObject    handle to isLDR (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isLDR
+
+isLDR=get(hObject,'Value');
+set(handles.isLDR,'Value',isLDR);
