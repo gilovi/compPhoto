@@ -4,7 +4,7 @@ mn = min(luminance(:));
 mx = max(luminance(:));
 
 nluminance = (luminance - min(luminance(:))) / (max(luminance(:))) * 100;
-logLuminance = log(nluminance + eps);
+logLuminance = log(nluminance + eps('single'));
 
 
 end

@@ -1,4 +1,4 @@
-function [ phi ] = getPhi( logLuminanceImage, method, params)
+function [ phi ] = getPhi( logLuminanceImage, method, params ,hue)
 %getG returns an the attenuation log luminance channel matrix.
 %  inputs: 
 %       dhPyr: the log luminance channel pyrmid
@@ -12,9 +12,9 @@ function [ phi ] = getPhi( logLuminanceImage, method, params)
         case 'fattal'
             f = @fattal;
         case 'energy'
-            if length(params) < 3
-                error(['not enough params for method ' method ]);
-            end
+%             if length(params) < 3
+%                 error(['not enough params for method ' method ]);
+%             end
             f = @energy;
 
         otherwise
@@ -26,11 +26,11 @@ function [ phi ] = getPhi( logLuminanceImage, method, params)
     d = floor(min(log2(size(logLuminanceImage)/32)));
     %smallest pyrmid image & its phi:
     [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(d),'bilinear'),'CentralDifference');
-    phi = f( mag, params);
+    phi = f( mag, params , imresize(hue,(0.5)^(d)) );
     %iteratively sum phi:
-    for i = d : -1 : 0
+    for i = d-1 : -1 : 0
         [mag,~] = imgradient(imresize(logLuminanceImage ,(0.5)^(i),'bilinear'),'CentralDifference');
-        currLevel = f(mag, params);
+        currLevel = f(mag, params, imresize(hue,(0.5)^(i)));
         phi = imresize(phi, size(mag), 'bilinear' ) .* currLevel;
     end
     
@@ -47,26 +47,21 @@ function [ phi ] = getPhi( logLuminanceImage, method, params)
 
 end
 
-function attenuatuation = fattal(nablaHmag, params)
+function attenuatuation = fattal(nablaHmag, params, ~)
     alfaFac = params(1);
     beta = params(2);
     
     alfa = mean(nablaHmag(:)) .* alfaFac;
-	nablaHmag(nablaHmag<=0) = eps;
+	nablaHmag(nablaHmag<=0) = eps('single');
     attenuatuation = (nablaHmag ./ alfa) .^ (beta - 1);
+    
 end
 
-function attenuatuation = energy(nablaHmag, params)
+function attenuatuation = energy(nablaHmag, params ,hue)
 %
-% usage:  energy(nablaH, [mag,sigma,attenuation])
-%   mag is the gaussian size, sigma is the gaussian sigma and attenuation is the attenuation factor 
-    mag = params(1);
-    sigma = params(2);
-    att = params(3);
+hueProp = params(3);
 
-    h = fspecial('gaussian', floor(min(size(im)/mag)), sigma);
-    lowpass=(imfilter(nablaHmag, h));
-    hipass =  nablaHmag - lowpass;
-    attenuatuation = (lowpass/att)+(hipass);
+[hueDer,~] = imgradient(hue,'intermediatedifference');
+attenuatuation = fattal(nablaHmag, params ,hue) + (hueDer/hueProp);
 
 end
