@@ -22,7 +22,7 @@ function varargout = HDR(varargin)
 
 % Edit the above text to modify the response to help HDR
 
-% Last Modified by GUIDE v2.5 11-Jun-2015 16:45:17
+% Last Modified by GUIDE v2.5 11-Jun-2015 19:30:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -298,6 +298,17 @@ function save_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+pic=im2uint8(get(handles.final,'CData'));
+name=get(handles.pic_name,'String');
+display(name);
+endd='.jpg';
+name=strcat(name,endd);
+display(name);
+imwrite(pic, name);
+
+
+
+
 
 % --- Executes on button press in isHDR.
 function isHDR_Callback(hObject, eventdata, handles)
@@ -309,6 +320,7 @@ function isHDR_Callback(hObject, eventdata, handles)
 
 isHDR=get(hObject,'Value');
 set(handles.isHDR,'Value',isHDR);
+
 
 
 % --- Executes on button press in isLDR.
@@ -429,9 +441,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton6.
-function pushbutton6_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton6 (see GCBO)
+% --- Executes on button press in final.
+function final_Callback(hObject, eventdata, handles)
+% hObject    handle to final (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -457,13 +469,43 @@ display(fatal);
 display(gamma_corection);
 if (~ strcmp(path,''))
     if ( fatal == 1 )
-        q = compressDR( image, 'fattal' , params , gamma_corection);
+        final = compressDR( image, 'fattal' , params , gamma_corection);
 
     else
-        q = compressDR( image, 'energy' , params , gamma_corection);
+        final = compressDR( image, 'energy' , params , gamma_corection);
     end
     axes(handles.axes3);
-    %set(handles.Load,'CData',image);
-    imshow(q);
+    set(handles.final,'CData',final);
+    imshow(final);
     
+end
+
+
+
+function pic_name_Callback(hObject, eventdata, handles)
+% hObject    handle to pic_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of pic_name as text
+%        str2double(get(hObject,'String')) returns contents of pic_name as a double
+
+pic_name=get(hObject,'String');
+if ( strcmp(pic_name,'')  )
+    pic_name='Defult';
+end
+set(handles.pic_name,'String', pic_name);
+
+
+
+% --- Executes during object creation, after setting all properties.
+function pic_name_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pic_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
