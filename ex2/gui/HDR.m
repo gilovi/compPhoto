@@ -409,8 +409,11 @@ function gamma_corection_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of gamma_corection as text
 %        str2double(get(hObject,'String')) returns contents of gamma_corection as a double
 
-gamma_corection=get(hObject,'Value');
+gamma_corection=get(hObject,'String');
+display(gamma_corection);
+gamma_corection=str2double(gamma_corection);
 set(handles.gamma_corection,'Value',gamma_corection);
+display (gamma_corection);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -441,16 +444,26 @@ gamma=get(handles.gamma, 'Value');
 params=[ alfa, beta, gamma ];
 fatal=get(handles.fatal,'Value');
 energy=get(handles.energy,'Value');
-gamma_corction=get(handles.gamma_corection,'Value');
-if ( strcmp(path,''))
+gamma_corection=get(handles.gamma_corection,'Value');
+display(path);
+display (alfa);
+%figure; 
+%title('fdsdf');
+%imshow(image);
+display(alfa);
+display(beta);
+display(params);
+display(fatal);
+display(gamma_corection);
+if (~ strcmp(path,''))
     if ( fatal == 1 )
-        q = compressDR( image, 'energy' , params , gamma_corection);
+        q = compressDR( image, 'fattal' , params , gamma_corection);
+
     else
-        q = compressDR( image, 'fatal' , params , gamma_corection);
+        q = compressDR( image, 'energy' , params , gamma_corection);
     end
-    axes(handles.axes1);
+    axes(handles.axes3);
     %set(handles.Load,'CData',image);
     imshow(q);
-    display(q);
     
 end
