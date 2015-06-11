@@ -3,7 +3,7 @@ function [ compressed ] = compressDR(image, method, params, gamma)
 %   Detailed explanation goes here
 
 %the precentage of the lower and upper values to throw
-THROWPERCNT = 3;
+THROWPERCNT = 0.2;
 
 image = real(im2double(image));
 HSV = im2double(rgb2hsv(image));

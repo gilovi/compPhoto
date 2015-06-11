@@ -200,8 +200,8 @@ function path_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of path as text
 %        str2double(get(hObject,'String')) returns contents of path as a double
 
-path=get(hObject, 'String')
-display(path)
+path=get(hObject, 'String');
+%display(path)
 set(handles.path,'String',path);
 
 
@@ -268,11 +268,13 @@ function Load_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+set(handles.pic_name,'String','');
+
 path = get(handles.path,'String');
 LDR=get(handles.isLDR,'Value');
 HDR=get(handles.isHDR,'Value');
-display(LDR);
-display(HDR);
+%display(LDR);
+%display(HDR);
 if  LDR == 1 
     image=im2double(imread(path));
     image=image.^2.2;
@@ -300,10 +302,10 @@ function save_Callback(hObject, eventdata, handles)
 
 pic=im2uint8(get(handles.final,'CData'));
 name=get(handles.pic_name,'String');
-display(name);
+%display(name);
 endd='.jpg';
 name=strcat(name,endd);
-display(name);
+%display(name);
 imwrite(pic, name);
 
 
@@ -422,10 +424,10 @@ function gamma_corection_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of gamma_corection as a double
 
 gamma_corection=get(hObject,'String');
-display(gamma_corection);
+%display(gamma_corection);
 gamma_corection=str2double(gamma_corection);
 set(handles.gamma_corection,'Value',gamma_corection);
-display (gamma_corection);
+%display (gamma_corection);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -457,16 +459,16 @@ params=[ alfa, beta, gamma ];
 fatal=get(handles.fatal,'Value');
 energy=get(handles.energy,'Value');
 gamma_corection=get(handles.gamma_corection,'Value');
-display(path);
-display (alfa);
+% display(path);
+% display (alfa);
 %figure; 
 %title('fdsdf');
 %imshow(image);
-display(alfa);
-display(beta);
-display(params);
-display(fatal);
-display(gamma_corection);
+% display(alfa);
+% display(beta);
+% display(params);
+% display(fatal);
+% display(gamma_corection);
 if (~ strcmp(path,''))
     if ( fatal == 1 )
         final = compressDR( image, 'fattal' , params , gamma_corection);
