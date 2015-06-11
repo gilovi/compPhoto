@@ -22,7 +22,7 @@ function varargout = HDR(varargin)
 
 % Edit the above text to modify the response to help HDR
 
-% Last Modified by GUIDE v2.5 08-Jun-2015 22:18:08
+% Last Modified by GUIDE v2.5 11-Jun-2015 16:45:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -76,20 +76,13 @@ varargout{1} = handles.output;
 
 
 % --- Executes on button press in fatal.
-function fatal_Callback(hObject, eventdata, handles)
+function fatal_Callback(hObject, handles)
 % hObject    handle to fatal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-path=get(handles.path, 'String');
-image=get(handles.image, 'Value');
-alfa=get(handles.alfa, 'Value');
-beta=get(handles.beta, 'Value');
-gamma=get(handles.gamma, 'Value');
-params=[ alfa, beta ];
-if ( path ~= '' )
-   q = compressDR( image, 'fatal' , params);
-   
-end
+
+fatal=get(hObject,'Value');
+set (handles.fatal,'Value',fatal);
 
    
 % --- Executes on button press in energy.
@@ -97,16 +90,9 @@ function energy_Callback(hObject, eventdata, handles)
 % hObject    handle to energy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-path=get(handles.path, 'String');
-image=get(handles.image, 'Value');
-alfa=get(handles.alfa, 'Value');
-beta=get(handles.beta, 'Value');
-gamma=get(handles.gamma, 'Value');
-params=[ alfa, beta, gamma ];
-if ( path ~= '' )
-    q = compressDR( image, 'energy' , params);
-    
-end
+
+energy=get(hObject,'Value');
+set(handles.energy,'Value',energy);
 
 
     
@@ -124,8 +110,11 @@ function alfa_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
 alfa = get(hObject,'Value');
-display(alfa);
+string1 = sprintf(' %.3f', alfa);
 set(handles.alfa,'Value',alfa);
+set(handles.edit5,'String', string1);
+
+
 
 % --- Executes during object creation, after setting all properties.
 function alfa_CreateFcn(hObject, eventdata, handles)
@@ -148,8 +137,9 @@ function beta_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 beta = get(hObject,'Value');
-display(beta);
 set(handles.beta,'Value',beta);
+string1 = sprintf(' %.3f', beta);
+set(handles.edit6,'String', string1);
 
 
 
@@ -175,8 +165,9 @@ function gamma_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
 gamma = get(hObject,'Value');
-display(gamma);
 set(handles.gamma,'Value',gamma);
+string1 = sprintf(' %.2f', gamma);
+set(handles.edit7,'String', string1);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -208,6 +199,7 @@ function path_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of path as text
 %        str2double(get(hObject,'String')) returns contents of path as a double
+
 path=get(hObject, 'String')
 display(path)
 set(handles.path,'String',path);
@@ -282,15 +274,16 @@ HDR=get(handles.isHDR,'Value');
 display(LDR);
 display(HDR);
 if  LDR == 1 
-    z=imread(path);
+    image=im2double(imread(path));
+    image=image.^2.2;
 else
-    z=hdrread(path);
+    image=hdrread(path);
 end
 
 axes(handles.axes1);
-set(handles.image,'Value',z);
-imshow(z);
-
+set(handles.Load,'CData',image);
+imshow(image);
+%guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function uipanel2_CreateFcn(hObject, eventdata, handles)
@@ -328,3 +321,136 @@ function isLDR_Callback(hObject, eventdata, handles)
 
 isLDR=get(hObject,'Value');
 set(handles.isLDR,'Value',isLDR);
+
+
+
+function edit5_Callback(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit5 as text
+%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+
+
+
+% --- Executes during object creation, after setting all properties.
+function edit5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit6_Callback(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit6 as text
+%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+
+beta=get(hObject,'Value');
+set(handles.beta,'Value',beta);
+
+
+
+% --- Executes during object creation, after setting all properties.
+function edit6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit7_Callback(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit7 as text
+%        str2double(get(hObject,'String')) returns contents of edit7 as a double
+
+gamma=get(hObject,'Value');
+set(handles.gamma,'Value',gamma);
+
+
+% --- Executes during object creation, after setting all properties.
+function edit7_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function gamma_corection_Callback(hObject, eventdata, handles)
+% hObject    handle to gamma_corection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of gamma_corection as text
+%        str2double(get(hObject,'String')) returns contents of gamma_corection as a double
+
+gamma_corection=get(hObject,'Value');
+set(handles.gamma_corection,'Value',gamma_corection);
+
+
+% --- Executes during object creation, after setting all properties.
+function gamma_corection_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to gamma_corection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+path=get(handles.path, 'String');
+image=get(handles.Load, 'CData');
+alfa=get(handles.alfa, 'Value');
+beta=get(handles.beta, 'Value');
+gamma=get(handles.gamma, 'Value');
+params=[ alfa, beta, gamma ];
+fatal=get(handles.fatal,'Value');
+energy=get(handles.energy,'Value');
+gamma_corction=get(handles.gamma_corection,'Value');
+if ( strcmp(path,''))
+    if ( fatal == 1 )
+        q = compressDR( image, 'energy' , params , gamma_corection);
+    else
+        q = compressDR( image, 'fatal' , params , gamma_corection);
+    end
+    axes(handles.axes1);
+    %set(handles.Load,'CData',image);
+    imshow(q);
+    display(q);
+    
+end
