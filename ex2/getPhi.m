@@ -12,9 +12,9 @@ function [ phi ] = getPhi( logLuminanceImage, method, params ,hue)
         case 'fattal'
             f = @fattal;
         case 'energy'
-%             if length(params) < 3
-%                 error(['not enough params for method ' method ]);
-%             end
+             if length(params) < 3
+                 error(['not enough params for method ' method ]);
+             end
             f = @energy;
 
         otherwise
@@ -35,14 +35,6 @@ function [ phi ] = getPhi( logLuminanceImage, method, params ,hue)
     end
     
     
-    
-%     phi = f( dhPyr{length(dhPyr)},params);
-%     for i = (length(dhPyr)-1) : -1 : 1
-%         currLevel = f(dhPyr{i}, params);
-%         phi = imresize(phi, size(dhPyr{i}), 'bilinear' ) .* currLevel;
-%     end
-    
-
     
 
 end
