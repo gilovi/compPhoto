@@ -54,6 +54,6 @@ function attenuatuation = energy(nablaHmag, params ,hue)
 hueProp = params(3);
 
 [hueDer,~] = imgradient(hue,'CentralDifference');
-attenuatuation = fattal(nablaHmag, params ,hue) + (hueDer/hueProp);
+attenuatuation = fattal(nablaHmag, params ,hue) - (hueDer/hueProp);
 
 end

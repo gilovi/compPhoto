@@ -10,8 +10,9 @@ HSV = im2double(rgb2hsv(image));
 lum = HSV(:,:,3);
 
 logLumChan = getLogLuminance(lum);
+logHue = getLogLuminance (HSV(:,:,1));
 
-phi = getPhi(logLumChan, method, params, HSV(:,:,1));
+phi = getPhi(logLumChan, method, params, logHue);
 
 [Gx, Gy] = getG(logLumChan, phi);
 

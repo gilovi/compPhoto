@@ -22,7 +22,7 @@ function varargout = HDR(varargin)
 
 % Edit the above text to modify the response to help HDR
 
-% Last Modified by GUIDE v2.5 11-Jun-2015 19:30:23
+% Last Modified by GUIDE v2.5 14-Jun-2015 16:32:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -267,7 +267,7 @@ function Load_Callback(hObject, eventdata, handles)
 % hObject    handle to Load (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+set(handles.status,'String','');
 set(handles.pic_name,'String','');
 
 path = get(handles.path,'String');
@@ -279,10 +279,11 @@ if  LDR == 1
     image=im2double(imread(path));
     image=image.^2.2;
 else
-    image=hdrread(path);
+    image=mat2gray(hdrread(path));
 end
 
 axes(handles.axes1);
+
 set(handles.Load,'CData',image);
 imshow(image);
 %guidata(hObject, handles);
@@ -449,7 +450,8 @@ function final_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
+set(handles.status,'String','Calculating...');
+pause(0.01);
 path=get(handles.path, 'String');
 image=get(handles.Load, 'CData');
 alfa=get(handles.alfa, 'Value');
@@ -459,6 +461,7 @@ params=[ alfa, beta, gamma ];
 fatal=get(handles.fatal,'Value');
 energy=get(handles.energy,'Value');
 gamma_corection=get(handles.gamma_corection,'Value');
+
 % display(path);
 % display (alfa);
 %figure; 
@@ -479,6 +482,7 @@ if (~ strcmp(path,''))
     axes(handles.axes3);
     set(handles.final,'CData',final);
     imshow(final);
+    set(handles.status,'String','Done.');
     
 end
 
@@ -510,4 +514,28 @@ function pic_name_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+
+function status_Callback(hObject, eventdata, handles)
+% hObject    handle to status (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of status as text
+%        str2double(get(hObject,'String')) returns contents of status as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function status_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to status (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+    
 end
