@@ -9,7 +9,7 @@ function [imCell] = get_images(fileName, pathName)
     for i = 1 : length(srcFiles)
         imCell{i} = im2double(imread(strcat(pathName,filesep,srcFiles(i).name)));
     end
-
+    size(imCell)
 
 end
 
