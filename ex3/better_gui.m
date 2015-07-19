@@ -22,7 +22,7 @@ function varargout = better_gui(varargin)
 
 % Edit the above text to modify the response to help better_gui
 
-% Last Modified by GUIDE v2.5 14-Jul-2015 10:22:51
+% Last Modified by GUIDE v2.5 14-Jul-2015 12:03:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,4 +93,3 @@ function file_path_ButtonDownFcn(hObject, eventdata, handles)
 [handles.fileName, handles.pathName] = uigetfile({'*.*'});
 guidata(hObject,handles)
 set(hObject,'String', handles.pathName);
-

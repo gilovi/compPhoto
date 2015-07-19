@@ -1,7 +1,5 @@
 function [imCell] = get_images(fileName, pathName)
 %
- 
-    
     suffixless = fileName(1:regexp(fileName,'[0-9]+\..*')-1);
     
     srcFiles = dir(strcat(pathName,suffixless,'*'));
