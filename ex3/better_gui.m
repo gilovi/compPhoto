@@ -83,7 +83,7 @@ function load_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 I = get_images(handles.fileName, handles.pathName);
 a=size(I)
-focus(I,1,0);
+focus(I,3,0);
 imshow(I{1})
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
