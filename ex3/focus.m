@@ -12,11 +12,16 @@ figure;
 %imshow(I{1});
 steps = mid-l:l-mid;
 Im= zeros(h,w,d);
+tmp= zeros(h,w,d);
+
 %imshow(shiftIm(I{1},steps(1)*shiftVal));
 %imshowpair(shiftIm(I{1},steps(1)*shiftVal),I{1},'diff');
 %im = zeros(size(I{1}));
 for i=1:l
-    imArry(i,:,:,:)= shiftIm(I{i},steps(i)*shiftVal);
+    %imArry(i,:,:,:)= shiftIm(I{i},steps(i)*shiftVal);
+    tmp= shiftIm(I{i},steps(i)*shiftVal);
+    %size(imArry(i,:,:,:))
+    imArry(i,:,:,:)=tmp(:,:,:);
     %if ocli==0
         %Im=Im+imArry(i); 
     %end
