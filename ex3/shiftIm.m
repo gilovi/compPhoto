@@ -4,7 +4,6 @@ function [ im] = shiftIm( im,val)
     val
     if ceil(val) == floor(val)
         im = circshift(im,[0,val]);
-        size(im)
         return
     else
         c = ceil(val);

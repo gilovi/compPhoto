@@ -4,11 +4,10 @@ function [ Im ] = focus( I, shiftVal, ocli )
 
 
 [l,~] = size(I);
-l
-[h,w,d]=size(I{1})
+[h,w,d]=size(I{1});
 mid = ceil(l/2);
 imArry=zeros(l,h,w,d);
-figure;
+%figure;
 %imshow(I{1});
 steps = mid-l:l-mid;
 Im= zeros(h,w,d);
@@ -20,19 +19,32 @@ tmp= zeros(h,w,d);
 for i=1:l
     %imArry(i,:,:,:)= shiftIm(I{i},steps(i)*shiftVal);
     tmp= shiftIm(I{i},steps(i)*shiftVal);
+    %rt=size(imArry);
+    %rt
     %size(imArry(i,:,:,:))
-    imArry(i,:,:,:)=tmp(:,:,:);
-    %if ocli==0
-        %Im=Im+imArry(i); 
-    %end
+    imArry(i,:,:,:)=tmp;
+    if ocli==0
+        Im=Im+tmp; 
+    end
         %im = im + shiftIm(I{i},steps(i)*shiftVal);
-    Im=Im+shiftIm(I{i},steps(i)*shiftVal);
+    %Im=Im+shiftIm(I{i},steps(i)*shiftVal);
 end
 
-imshowpair(I{1},Im,'diff');
-%if ocli==0
-%    Im=Im./l;
-%end
+
+
+
+if ocli==0
+    Im=Im./l;
+else
+    %b=permute(imArry,[4,1,2,3]);
+    %x=reshape(b,l,numel(b)/l);
+    %y=mean(x);
+    %x=reshape(y,1,h,w,d);
+    %aw=size(x);
+    %Im=permute(x,[2,3,4,1]);
+    Im=mean(imArry,4);
+end
+%imshowpair(I{1},Im,'diff');
 %imshow(Im);
 end
 
