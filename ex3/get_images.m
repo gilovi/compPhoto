@@ -1,13 +1,15 @@
-function [imCell] = get_images(fileName, pathName)
+function [imMat] = get_images(fileName, pathName)
 %
-    suffixless = fileName(1:regexp(fileName,'[0-9]+\..*')-1);
+    suffixless = fileName(1:regexp(fileName,'[0-9]+.*\..*')-1);
     
     srcFiles = dir(strcat(pathName,suffixless,'*'));
-    imCell = cell(length(srcFiles),1);
+    imMat = cell(length(srcFiles),1);
     for i = 1 : length(srcFiles)
-        imCell{i} = im2double(imread(strcat(pathName,filesep,srcFiles(i).name)));
+        imMat{i} = im2double(imread(strcat(pathName,filesep,srcFiles(i).name)));
     end
-
-
+% tmp = zeros(size(imMat{1}));
+% imMat = cell2mat(imMat);
+% imMat = reshape(imMat,cat(2,size(tmp),length(srcFiles)));
+    
 end
 
