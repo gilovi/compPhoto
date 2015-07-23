@@ -85,6 +85,7 @@ function load_Callback(hObject, eventdata, handles)
 I = get_images(handles.fileName, handles.pathName);
 handles.I = I;
 handles.optical_flow=optical_flow(I);
+imshow(I{1});
 guidata(hObject,handles);
 
 
