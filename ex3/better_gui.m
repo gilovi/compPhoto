@@ -334,10 +334,11 @@ function r90_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of r90
 handles.r90 = 1;
+handles.num=90;
 %set(handles.r135,'Value', 0);
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '90');
-set(handles.deg_slide,'Value', 90);
+%set(handles.deg_slide,'Value', 90);
 guidata(hObject,handles);
 
 % --- Executes on button press in r45.
@@ -349,10 +350,11 @@ function r45_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of r45
 
 handles.r45 = 1;
+handles.num=45;
 %set(handles.r135,'Value', 0);
 %set(handles.r90,'Value', 0);
 set(handles.degrees,'String', '45');
-set(handles.deg_slide,'Value', 45);
+%set(handles.deg_slide,'Value', 45);
 guidata(hObject,handles);
 
 
@@ -365,13 +367,14 @@ function r135_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of r135
 
-handles.r45 = 0;
-handles.r90 = 0;
+%handles.r45 = 0;
+%handles.r90 = 0;
 handles.r135 = 1;
+handles.num=135;
 %set(handles.r90,'Value', 0);
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '135');
-set(handles.deg_slide,'Value', 135);
+%set(handles.deg_slide,'Value', 135);
 
 guidata(hObject,handles);
 
