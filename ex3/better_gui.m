@@ -404,6 +404,8 @@ function deg_slide_Callback(hObject, eventdata, handles)
 deg=get(hObject,'Value');
 handles.deg_slide=deg;
 set(handles.degrees,'String', num2str(deg));
+q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
+imshow(q);
 guidata(hObject,handles);
 
 
