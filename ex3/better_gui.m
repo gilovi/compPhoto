@@ -22,7 +22,7 @@ function varargout = better_gui(varargin)
 
 % Edit the above text to modify the response to help better_gui
 
-% Last Modified by GUIDE v2.5 22-Jul-2015 23:08:37
+% Last Modified by GUIDE v2.5 23-Jul-2015 09:48:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -282,22 +282,22 @@ function focus_num1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
-handles.num=get(hObject,'Value');
-handles.num
-handles.edit=handles.num;
-handles.edit
+handles.num1=get(hObject,'Value');
+handles.num1
+set (handles.pos_box,'String',handles.num1);
+%handles.edit=handles.num;
+%handles.edit
 %set(handles.edit,'String',handles.num);
 
 
 focus_num = str2double(get(hObject,'String'));
 handles.edit=focus_num;
-guidata(hObject,handles);
 if handles.without_oclison == 1
     x=0;
 else
     x=1;
 end
-q=focus(handles.I,handles.num,x);
+q=focus(handles.I,handles.num1,x);
 imshow(q);
 
 guidata(hObject,handles);
@@ -404,4 +404,31 @@ function deg_slide_CreateFcn(hObject, eventdata, handles)
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function pos_box_Callback(hObject, eventdata, handles)
+% hObject    handle to pos_box (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of pos_box as text
+%        str2double(get(hObject,'String')) returns contents of pos_box as a double
+handles.pos_box=str2double(get(hObject,'String'));
+guidata(hObject,handles);
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function pos_box_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pos_box (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
