@@ -4,14 +4,15 @@ function [ moved ] = move( images , flowVec , degrees, beta )
 %   beta from -1 to 1
 
     [r,c,v] = size(images{1});
-    if ((any(flowVec(flowVec > 0)) && degrees > 90) ||...
-            (any(flowVec(flowVec < 0)) && degrees < 90))
+    if ((any(flowVec(flowVec > 0)) && degrees < 90) ||...
+            (any(flowVec(flowVec < 0)) && degrees > 90))
         images = flip(images);
         flowVec = flip(flowVec);
+        beta = -beta;  
     end
     if degrees > 90
         degrees = 180 - degrees;
-        beta = -beta;  
+       
     end
     flowVec = abs(flowVec);
     
@@ -23,6 +24,7 @@ function [ moved ] = move( images , flowVec , degrees, beta )
     pixVal = tan(theta)*translation;
     pixVal = pixVal/max(cumflow) * -c + 1; %normalizing and setting the sign.
     pixVal = pixVal + (cumflow(center)/max(cumflow)) * c;
+%     pixVal = cat(1,pixVal,inf);
 
 %     if isNeg
 %         pixVal = pixVal * -1;
@@ -42,7 +44,7 @@ function [ moved ] = move( images , flowVec , degrees, beta )
     dist = conv(pixVal,[1,-1]) + conv(cumflow,[1,-1]);
     %dist = dist+ones(size(dist));
     dist(1) = 0;
-    dist(length(dist)) = inf;
+    dist(length(dist)) = 0;
     dist = dist/2;
     
     
@@ -70,10 +72,18 @@ function [ moved ] = move( images , flowVec , degrees, beta )
 %     end
     for i = 1 : length(images) 
           cur = images{i};
-          moved = cat(2,moved,...
-              cur(:, min( (max(pixVal(i) - dist(i), 1) ) , c) : ...
-              min( (max(pixVal(i+1) - dist(i), 1) ) , c), :) ...
-              );
+          bg = (min( (max(pixVal(i) - dist(i), 1) ) , c));
+%           rbg = bg-floor(bg);
+          ed = (min( (max(pixVal(i) + dist(i+1), 1) ) , c));
+          
+%           if rbg && i~=1
+%           lst = images{i-1}
+%           moved = cat(2,moved, cur(:, floor(bg) , :)*(1-rbg) ) +...
+%              lst(:, ceil(ed) , :)*(ed) ;
+%           end
+          
+          moved = cat(2,moved,cur(:, round(bg) : round(ed) , :) );
+          
 %          rPxDist = pixVal(i+1)-pixVal(i) ;
 %          lPxDist = pixVal(i)-pixVal(i-1);
 %          
