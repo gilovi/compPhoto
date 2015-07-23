@@ -35,6 +35,7 @@ end
 
 if ocli==0
     Im=Im./l;
+    size(Im)
 else
     %b=permute(imArry,[4,1,2,3]);
     %x=reshape(b,l,numel(b)/l);
@@ -42,7 +43,9 @@ else
     %x=reshape(y,1,h,w,d);
     %aw=size(x);
     %Im=permute(x,[2,3,4,1]);
-    Im=mean(imArry,4);
+    Im=median(imArry,1);
+    %Im=remat(Im(,:,:,:));
+    size(Im)
 end
 %imshowpair(I{1},Im,'diff');
 %imshow(Im);

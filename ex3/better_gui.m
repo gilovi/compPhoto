@@ -22,7 +22,7 @@ function varargout = better_gui(varargin)
 
 % Edit the above text to modify the response to help better_gui
 
-% Last Modified by GUIDE v2.5 23-Jul-2015 09:48:35
+% Last Modified by GUIDE v2.5 23-Jul-2015 11:33:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -84,6 +84,7 @@ function load_Callback(hObject, eventdata, handles)
 
 I = get_images(handles.fileName, handles.pathName);
 handles.I = I;
+handles.optical_flow=optical_flow(I);
 guidata(hObject,handles);
 
 
@@ -251,18 +252,24 @@ end
 
 
 
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function beta_Callback(hObject, eventdata, handles)
+% hObject    handle to beta (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+% Hints: get(hObject,'String') returns contents of beta as text
+%        str2double(get(hObject,'String')) returns contents of beta as a double
+
+handles.beta= str2double(get(hObject,'String'));
+q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
+imshow(q);
+guidata(hObject,handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function beta_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to beta (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -339,6 +346,8 @@ handles.num=90;
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '90');
 %set(handles.deg_slide,'Value', 90);
+q=move( handles.I, handles.optical_flow, 90, handles.beta );
+imshow(q);
 guidata(hObject,handles);
 
 % --- Executes on button press in r45.
@@ -355,6 +364,8 @@ handles.num=45;
 %set(handles.r90,'Value', 0);
 set(handles.degrees,'String', '45');
 %set(handles.deg_slide,'Value', 45);
+q=move( handles.I, handles.optical_flow, 45, handles.beta );
+imshow(q);
 guidata(hObject,handles);
 
 
@@ -375,6 +386,8 @@ handles.num=135;
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '135');
 %set(handles.deg_slide,'Value', 135);
+q=move( handles.I, handles.optical_flow, 135, handles.beta );
+imshow(q);
 
 guidata(hObject,handles);
 
@@ -416,6 +429,8 @@ function pos_box_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of pos_box as text
 %        str2double(get(hObject,'String')) returns contents of pos_box as a double
 handles.pos_box=str2double(get(hObject,'String'));
+q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
+imshow(q);
 guidata(hObject,handles);
 
 
