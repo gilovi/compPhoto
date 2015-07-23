@@ -22,7 +22,7 @@ function varargout = better_gui(varargin)
 
 % Edit the above text to modify the response to help better_gui
 
-% Last Modified by GUIDE v2.5 23-Jul-2015 11:33:54
+% Last Modified by GUIDE v2.5 23-Jul-2015 14:36:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -262,6 +262,7 @@ function beta_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of beta as a double
 
 handles.beta= str2double(get(hObject,'String'));
+handles.beta_int=handles.beta;
 q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
 imshow(q);
 guidata(hObject,handles);
@@ -345,9 +346,10 @@ handles.r90 = 1;
 handles.num=90;
 %set(handles.r135,'Value', 0);
 %set(handles.r45,'Value', 0);
+
 set(handles.degrees,'String', '90');
 %set(handles.deg_slide,'Value', 90);
-q=move( handles.I, handles.optical_flow, 90, handles.beta );
+q=move( handles.I, handles.optical_flow, 90, str2double(handles.beta) );
 imshow(q);
 guidata(hObject,handles);
 
@@ -365,7 +367,7 @@ handles.num=45;
 %set(handles.r90,'Value', 0);
 set(handles.degrees,'String', '45');
 %set(handles.deg_slide,'Value', 45);
-q=move( handles.I, handles.optical_flow, 45, handles.beta );
+q=move( handles.I, handles.optical_flow, 45, str2double(handles.beta) );
 imshow(q);
 guidata(hObject,handles);
 
@@ -387,7 +389,7 @@ handles.num=135;
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '135');
 %set(handles.deg_slide,'Value', 135);
-q=move( handles.I, handles.optical_flow, 135, handles.beta );
+q=move( handles.I, handles.optical_flow, 135, str2double(handles.beta) );
 imshow(q);
 
 guidata(hObject,handles);
@@ -403,9 +405,10 @@ function deg_slide_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
 deg=get(hObject,'Value');
+handles.num=deg;
 handles.deg_slide=deg;
 set(handles.degrees,'String', num2str(deg));
-q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
+q=move( handles.I, handles.optical_flow, handles.num, handles.beta_int );
 imshow(q);
 guidata(hObject,handles);
 
@@ -432,7 +435,7 @@ function pos_box_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of pos_box as text
 %        str2double(get(hObject,'String')) returns contents of pos_box as a double
 handles.pos_box=str2double(get(hObject,'String'));
-q=move( handles.I, handles.optical_flow, handles.degrees, handles.beta );
+q=move( handles.I, handles.optical_flow, handles.num, str2double(handles.beta) );
 imshow(q);
 guidata(hObject,handles);
 
@@ -450,3 +453,33 @@ function pos_box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on slider movement.
+function beta_slide_Callback(hObject, eventdata, handles)
+% hObject    handle to beta_slide (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+handles.beta_slide=get(hObject,'Value');
+set(handles.beta,'String', num2str(handles.beta_slide));
+handles.beta_int=handles.beta_slide;
+q=move( handles.I, handles.optical_flow, handles.num, handles.beta_int );
+imshow(q);
+guidata(hObject,handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function beta_slide_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to beta_slide (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
