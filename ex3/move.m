@@ -3,9 +3,6 @@ function [ moved ] = move( images , flowVec , degrees, beta )
 %   degrees 0 to 180
 %   beta from -1 to 1
 
-    degrees
-    beta
-
     [r,c,v] = size(images{1});
     if ((any(flowVec(flowVec > 0)) && degrees < 90) ||...
             (any(flowVec(flowVec < 0)) && degrees > 90))
@@ -113,4 +110,6 @@ function [ moved ] = move( images , flowVec , degrees, beta )
          %figure;imshow(moved)
     end
 
+
 end 
+

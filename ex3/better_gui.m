@@ -344,12 +344,15 @@ function r90_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of r90
 handles.r90 = 1;
 handles.num=90;
+
+global beta;
 %set(handles.r135,'Value', 0);
 %set(handles.r45,'Value', 0);
-
+global num;
+num=90;
 set(handles.degrees,'String', '90');
 %set(handles.deg_slide,'Value', 90);
-q=move( handles.I, handles.optical_flow, 90, str2double(handles.beta) );
+q=move( handles.I, handles.optical_flow, 90, beta );
 imshow(q);
 guidata(hObject,handles);
 
@@ -361,13 +364,20 @@ function r45_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of r45
 
+global num;
+global beta;
+num=45;
+
 handles.r45 = 1;
 handles.num=45;
 %set(handles.r135,'Value', 0);
 %set(handles.r90,'Value', 0);
 set(handles.degrees,'String', '45');
 %set(handles.deg_slide,'Value', 45);
+
 q=move( handles.I, handles.optical_flow, 45, str2double(handles.beta) );
+
+q=move( handles.I, handles.optical_flow, 45, beta );
 imshow(q);
 guidata(hObject,handles);
 
@@ -381,6 +391,10 @@ function r135_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of r135
 
+global num;
+global beta;
+num=135;
+
 %handles.r45 = 0;
 %handles.r90 = 0;
 handles.r135 = 1;
@@ -389,7 +403,11 @@ handles.num=135;
 %set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '135');
 %set(handles.deg_slide,'Value', 135);
+
 q=move( handles.I, handles.optical_flow, 135, str2double(handles.beta) );
+
+q=move( handles.I, handles.optical_flow, 135, beta );
+
 imshow(q);
 
 guidata(hObject,handles);
@@ -404,11 +422,14 @@ function deg_slide_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
+global num;
+global beta;
 deg=get(hObject,'Value');
-handles.num=deg;
+num=deg;
 handles.deg_slide=deg;
-set(handles.degrees,'String', num2str(deg));
-q=move( handles.I, handles.optical_flow, handles.num, handles.beta_int );
+%set(num,'String', num2str(deg));
+q=move( handles.I, handles.optical_flow, num, beta );
+
 imshow(q);
 guidata(hObject,handles);
 
@@ -434,8 +455,13 @@ function pos_box_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of pos_box as text
 %        str2double(get(hObject,'String')) returns contents of pos_box as a double
+
+global num;
+global beta;
+beta= handles.pos_box;
 handles.pos_box=str2double(get(hObject,'String'));
-q=move( handles.I, handles.optical_flow, handles.num, str2double(handles.beta) );
+q=move( handles.I, handles.optical_flow, num,beta );
+
 imshow(q);
 guidata(hObject,handles);
 
@@ -464,10 +490,14 @@ function beta_slide_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
+global num;
+global beta;
 handles.beta_slide=get(hObject,'Value');
+beta=handles.beta_slide;
 set(handles.beta,'String', num2str(handles.beta_slide));
 handles.beta_int=handles.beta_slide;
-q=move( handles.I, handles.optical_flow, handles.num, handles.beta_int );
+q=move( handles.I, handles.optical_flow, num, handles.beta_int );
+
 imshow(q);
 guidata(hObject,handles);
 
