@@ -4,10 +4,17 @@ function [ moved ] = move( images , flowVec , degrees, beta )
 %   beta from -1 to 1
 
     [r,c,v] = size(images{1});
-    if any(flowVec(flowVec < 0))
+    if ((any(flowVec(flowVec > 0)) && degrees > 90) ||...
+            (any(flowVec(flowVec < 0)) && degrees < 90))
         images = flip(images);
-        flowVec = -1*flip(flowVec);
+        flowVec = flip(flowVec);
     end
+    if degrees > 90
+        degrees = 180 - degrees;
+        beta = -beta;  
+    end
+    flowVec = abs(flowVec);
+    
     center = floor(((beta+1)/2) * (length(images)-1)) + 1; % normalizing beta to be in #images scale
     theta = degrees/180*-pi;
     
@@ -25,17 +32,17 @@ function [ moved ] = move( images , flowVec , degrees, beta )
 %     grid on; grid minor; hold on; axis([1,r,1,length(translation)]);
 %     plot(pixVal , 1:length(translation),'or' );
     %%%%%%%%
-    valid = (pixVal >= 1 & pixVal <= c); %trim to valid values 
-    cumflow = cumflow(valid);
-    pixVal = pixVal(valid); 
-    images = images(valid);
-    flow = [0;flowVec];
-    flow = flow(valid);
+%     valid = (pixVal >= 1 & pixVal <= c); %trim to valid values 
+%     cumflow = cumflow(valid);
+%     pixVal = pixVal(valid); 
+%     images = images(valid);
+%     flow = [0;flowVec];
+%     flow = flow(valid);
     
     dist = conv(pixVal,[1,-1]) + conv(cumflow,[1,-1]);
     %dist = dist+ones(size(dist));
     dist(1) = 0;
-    dist(length(dist)) = 0;
+    dist(length(dist)) = inf;
     dist = dist/2;
     
     
@@ -43,37 +50,41 @@ function [ moved ] = move( images , flowVec , degrees, beta )
     % TODO: restrict the pixval and translation to its limits 
     
     
-    moved = zeros(r, sum(ceil(dist*2)) , v); 
+     moved = zeros(r, 0 , v); 
     %figure;imshow(moved);
     
-     if ~valid(1)
-        f = images{1};
-        moved = cat(2, f(:, 1 : round(pixVal(1)), :), moved);
+%      if ~valid(1)
+%         f = images{1};
+%         moved = cat(2, f(:, 1 : round(pixVal(1)), :), moved);
        %figure; imshow (f(:, 1 : round(pixVal(1)), :))
 %       figure;imshow(moved);
 
-    end
-    if ~valid(length(valid))
-        f = images{length(images)};     
-        moved = cat(2, moved, f(:, round(pixVal(length(pixVal))) : size(f,2),: ));
-        %figure; imshow (f(:, round(pixVal(length(pixVal))) : size(f,1),: ))
-        %figure;imshow(moved);
+%     end
+%     if ~valid(length(valid))
+%         f = images{length(images)};     
+%         moved = cat(2, moved, f(:, round(pixVal(length(pixVal))) : size(f,2),: ));
+%         %figure; imshow (f(:, round(pixVal(length(pixVal))) : size(f,1),: ))
+%         %figure;imshow(moved);
 
       
-    end
-    for i = 2 : length(pixVal)-1 %TODO handle edges %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-         cur = images{i};
-         rPxDist = pixVal(i+1)-pixVal(i) ;
-         lPxDist = pixVal(i)-pixVal(i-1);
-         
-         iPx = round(pixVal(i));
-         rPx = iPx - pixVal(i);
-         
-         iL = floor(dist(i));
-         iR = ceil(dist(i+1));
-         rL = dist(i) - floor(dist(i) + (rPx*(rPx>0)) );
-         rR = dist(i+1) - floor(dist(i+1) + (-rPx*(rPx<0)));
-         moved(:, iPx-iL : iPx+iR, : ) = cur(:, iPx-iL : iPx+iR ,:);
+%     end
+    for i = 1 : length(images) 
+          cur = images{i};
+          moved = cat(2,moved,...
+              cur(:, min( (max(pixVal(i) - dist(i), 1) ) , c) : ...
+              min( (max(pixVal(i+1) - dist(i), 1) ) , c), :) ...
+              );
+%          rPxDist = pixVal(i+1)-pixVal(i) ;
+%          lPxDist = pixVal(i)-pixVal(i-1);
+%          
+%          iPx = round(pixVal(i));
+%          rPx = iPx - pixVal(i);
+%          
+%          iL = floor(dist(i));
+%          iR = ceil(dist(i+1));
+%          rL = dist(i) - floor(dist(i) + (rPx*(rPx>0)) );
+%          rR = dist(i+1) - floor(dist(i+1) + (-rPx*(rPx<0)));
+%          moved(:, iPx-iL : iPx+iR, : ) = cur(:, iPx-iL : iPx+iR ,:);
           %imshow(cur(:, iPx-iL : iPx+iR ,:))
           %imshow(moved);
 
@@ -84,8 +95,8 @@ function [ moved ] = move( images , flowVec , degrees, beta )
          %tmp2( :, iPx - ceil(iL+rL), 1)=1;
          %figure;imshow(tmp);
          %figure;imshow(tmp2);
-         moved(:, iPx - ceil(iL+rL), :) = cur( :, iPx - ceil(iL+rL), :)*(1-rL);
-         moved( : ,iPx + ceil(iR+rR) , :) = cur(:, iPx +  ceil( iR+rR), :)*(rR+~rR);
+%          moved(:, iPx - ceil(iL+rL), :) = cur( :, iPx - ceil(iL+rL), :)*(1-rL);
+%          moved( : ,iPx + ceil(iR+rR) , :) = cur(:, iPx +  ceil( iR+rR), :)*(rR+~rR);
          %figure;imshow(moved)
     end
 
