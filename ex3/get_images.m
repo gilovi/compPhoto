@@ -4,12 +4,21 @@ function [imMat] = get_images(fileName, pathName)
     
     srcFiles = dir(strcat(pathName,suffixless,'*'));
     imMat = cell(length(srcFiles),1);
-    for i = 1 : length(srcFiles)
-        imMat{i} = im2double(imread(strcat(pathName,filesep,srcFiles(i).name)));
+    
+    f = 1;
+    tmp = im2double(imread(strcat(pathName,filesep,srcFiles(1).name)));
+    [val,idx]= max(size(tmp));
+    if val > 1024
+        f = 1024/size(tmp,idx);
     end
-% tmp = zeros(size(imMat{1}));
-% imMat = cell2mat(imMat);
-% imMat = reshape(imMat,cat(2,size(tmp),length(srcFiles)));
+    imMat{1} = imresize(tmp,f);
+    clear tmp;
+    
+    for i = 2 : length(srcFiles)
+        imMat{i} = im2double(imread(strcat(pathName,filesep,srcFiles(i).name)));
+        imMat{i} = imresize(imMat{i},f);
+    end
+
     
 end
 
