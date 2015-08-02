@@ -9,8 +9,8 @@ function [imMat] = get_images(fileName, pathName)
     f = 1;
     tmp = im2double(imread(strcat(pathName,filesep,srcFiles(1).name)));
     [val,idx]= max(size(tmp));
-    if val > 1024
-        f = 1024/size(tmp,idx);
+    if val > 512
+        f = 512/size(tmp,idx);
     end
     imMat{1} = imresize(tmp,f);
     clear tmp;
