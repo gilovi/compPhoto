@@ -22,7 +22,7 @@ function varargout = better_gui(varargin)
 
 % Edit the above text to modify the response to help better_gui
 
-% Last Modified by GUIDE v2.5 23-Jul-2015 14:36:44
+% Last Modified by GUIDE v2.5 02-Aug-2015 11:30:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,7 +85,7 @@ function load_Callback(hObject, eventdata, handles)
 I = get_images(handles.fileName, handles.pathName);
 handles.I = I;
 handles.optical_flow=optical_flow(I);
-imshow(I{1});
+imshow(I{round(length(I)/2)});
 guidata(hObject,handles);
 
 
@@ -101,6 +101,11 @@ function file_path_ButtonDownFcn(hObject, eventdata, handles)
 [handles.fileName, handles.pathName] = uigetfile({'*.*'});
 guidata(hObject,handles);
 set(hObject,'String', handles.pathName);
+I = get_images(handles.fileName, handles.pathName);
+handles.I = I;
+handles.optical_flow=optical_flow(I);
+imshow(I{round(length(I)/2)});
+guidata(hObject,handles);
 
 
 % --- Executes on button press in radiobutton1.
@@ -122,7 +127,7 @@ function focus_inpiut_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of focus_inpiut as a double
 
 focus_inpiut=str2double(get(hObject,'String'));
-%focus_inpiut
+focus_inpiut
 %set(handles.start_focus,'Value',start_focus);
 handles.focus_inpiut = focus_inpiut;
 %handles.focus_inpiut
@@ -229,15 +234,20 @@ function degrees_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of degrees as text
 %        str2double(get(hObject,'String')) returns contents of degrees as a double
 
-if handles.r45==1
-    set(handles.degrees,'String', '45');
+
+global num;
+global beta;
+num=str2double(get(hObject,'String'));
+%set(handles.deg_slide,'Value',num);
+if num >180
+    num=180;
 end
-if handles.r90==1
-    set(handles.degrees,'String', '90' );
+if num < 0 
+    num=0;
 end
-if handles.r135==1
-    set(handles.degrees,'String', '135' );
-end
+set(handles.degrees,'String', num2str(num));
+q=move( handles.I, handles.optical_flow, num, beta );
+imshow(q);
 
 % --- Executes during object creation, after setting all properties.
 function degrees_CreateFcn(hObject, eventdata, handles)
@@ -291,9 +301,10 @@ function focus_num1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
-handles.num1=get(hObject,'Value');
-handles.num1
-set (handles.pos_box,'String',handles.num1);
+global focus_fact;
+focus_fact=get(hObject,'Value');
+%handles.num1
+set (handles.pos_box,'String',focus_fact);
 %handles.edit=handles.num;
 %handles.edit
 %set(handles.edit,'String',handles.num);
@@ -306,7 +317,7 @@ if handles.without_oclison == 1
 else
     x=1;
 end
-q=focus(handles.I,handles.num1,x);
+q=focus(handles.I,focus_fact,x);
 imshow(q);
 
 guidata(hObject,handles);
@@ -344,7 +355,6 @@ function r90_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of r90
 handles.r90 = 1;
 handles.num=90;
-
 global beta;
 %set(handles.r135,'Value', 0);
 %set(handles.r45,'Value', 0);
@@ -363,20 +373,15 @@ function r45_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of r45
-
 global num;
 global beta;
 num=45;
-
 handles.r45 = 1;
 handles.num=45;
 %set(handles.r135,'Value', 0);
 %set(handles.r90,'Value', 0);
 set(handles.degrees,'String', '45');
 %set(handles.deg_slide,'Value', 45);
-
-q=move( handles.I, handles.optical_flow, 45, str2double(handles.beta) );
-
 q=move( handles.I, handles.optical_flow, 45, beta );
 imshow(q);
 guidata(hObject,handles);
@@ -390,26 +395,17 @@ function r135_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of r135
-
 global num;
 global beta;
 num=135;
-
-%handles.r45 = 0;
-%handles.r90 = 0;
 handles.r135 = 1;
 handles.num=135;
+%set(handles.r135,'Value', 0);
 %set(handles.r90,'Value', 0);
-%set(handles.r45,'Value', 0);
 set(handles.degrees,'String', '135');
 %set(handles.deg_slide,'Value', 135);
-
-q=move( handles.I, handles.optical_flow, 135, str2double(handles.beta) );
-
 q=move( handles.I, handles.optical_flow, 135, beta );
-
 imshow(q);
-
 guidata(hObject,handles);
 
 
@@ -421,15 +417,13 @@ function deg_slide_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
 global num;
 global beta;
 deg=get(hObject,'Value');
 num=deg;
 handles.deg_slide=deg;
-%set(num,'String', num2str(deg));
+set(handles.degrees,'String', num2str(deg));
 q=move( handles.I, handles.optical_flow, num, beta );
-
 imshow(q);
 guidata(hObject,handles);
 
@@ -455,13 +449,25 @@ function pos_box_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of pos_box as text
 %        str2double(get(hObject,'String')) returns contents of pos_box as a double
-
 global num;
+global focus_fact;
 global beta;
 beta= handles.pos_box;
-handles.pos_box=str2double(get(hObject,'String'));
-q=move( handles.I, handles.optical_flow, num,beta );
-
+focus_fact=str2double(get(hObject,'String'));
+if (focus_fact > 50)
+    focus_fact=50;
+end
+if (focus_fact < -50)
+    focus_fact= -50;
+end
+if handles.without_oclison == 1
+    y=0;
+else
+    y=1;
+end
+set (handles.pos_box,'String',focus_fact);
+set (handles.focus_num1,'Value',focus_fact);
+q=focus( handles.I, focus_fact, y );
 imshow(q);
 guidata(hObject,handles);
 
@@ -489,7 +495,6 @@ function beta_slide_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
 global num;
 global beta;
 handles.beta_slide=get(hObject,'Value');
@@ -497,7 +502,6 @@ beta=handles.beta_slide;
 set(handles.beta,'String', num2str(handles.beta_slide));
 handles.beta_int=handles.beta_slide;
 q=move( handles.I, handles.optical_flow, num, handles.beta_int );
-
 imshow(q);
 guidata(hObject,handles);
 
@@ -512,4 +516,3 @@ function beta_slide_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-
